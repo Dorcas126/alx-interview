@@ -5,22 +5,24 @@ Solution to lockboxes problem
 
 
 def canUnlockAll(boxes):
-    """
-    Determines whether a series of locked boxes can be opened
-    based on keys that can be attained.
-    Solution to the lockboxes problem
-    """
-    if (type(boxes)) is not list:
-        return False
-    elif (len(boxes)) == 0:
-        return False
+    keys = [0]  # list of keys available to the player
+    unlocked = [False] * len(boxes)  # list of boxes unlocked by the player
+    unlocked[0] = True  # player starts with box 0 unlocked
+    
+    while keys:
+        box_idx = keys.pop()
+        for key in boxes[box_idx]:
+            if key >= 0 and key < len(boxes) and not unlocked[key]:
+                keys.append(key)
+                unlocked[key] = True
+    
+    return all(unlocked)
 
-    for k in range(1, len(boxes) - 1):
-        boxes_checked = False
-        for idx in range(len(boxes)):
-            boxes_checked = k in boxes[idx] and k != idx
-            if boxes_checked:
-                break
-        if boxes_checked is False:
-            return boxes_checked
-    return True
+boxes = [[1], [2], [3], [4], []]
+print(canUnlockAll(boxes))  # True
+
+boxes = [[1, 4, 6], [2], [0, 4, 1], [5, 6, 2], [3], [4, 1], [6]]
+print(canUnlockAll(boxes))  # True
+
+boxes = [[1, 4], [2], [0, 4, 1], [3], [], [4, 1], [5, 6]]
+print(canUnlockAll(boxes))  # False
